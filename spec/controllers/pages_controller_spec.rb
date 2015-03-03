@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe PagesController, type: :controller do
   render_views
 
+  def setup
+    @base_title = "Ruby on Rails Tutorial Sample App"
+  end
+
   describe "GET #home" do
     it "returns http success" do
       get :home
@@ -11,7 +15,7 @@ RSpec.describe PagesController, type: :controller do
 
     it "returns the right title" do
       get :home
-      expect(response.body).to have_content("Ruby on Rails Tutorial Sample App | Home")
+      expect(response.body).to have_content("#{@base_title} | Home")
     end
 
     it "returns a non blank body" do
@@ -28,7 +32,7 @@ RSpec.describe PagesController, type: :controller do
 
     it "returns the right title" do
       get :contact
-      expect(response.body).to have_content("Ruby on Rails Tutorial Sample App | Contact")
+      expect(response.body).to have_content("#{@base_title} | Contact")
     end
   end
 
@@ -40,7 +44,7 @@ RSpec.describe PagesController, type: :controller do
 
     it "returns the right title" do
       get :about
-      expect(response.body).to have_content("Ruby on Rails Tutorial Sample App | About")
+      expect(response.body).to have_content("#{@base_title} | About")
     end
   end
 
