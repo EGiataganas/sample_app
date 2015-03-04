@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe PagesController, type: :controller do
   render_views
 
-  def setup
+  before (:each) do
     @base_title = "Ruby on Rails Tutorial Sample App"
   end
 
