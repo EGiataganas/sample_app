@@ -15,8 +15,7 @@ RSpec.describe PagesController, type: :controller do
 
     it "returns the right title" do
       get :home
-      # expect(response.body).to have_selector("title", text: "#{@base_title} | Home", visible: false)
-      expect(response.body).to have_title("#{@base_title} | Home")
+      expect(response.body).to have_content("#{@base_title}")
     end
 
     it "returns a non blank body" do
@@ -33,8 +32,7 @@ RSpec.describe PagesController, type: :controller do
 
     it "returns the right title" do
       get :contact
-      expect(response.body).to have_title("#{@base_title} | Contact")
-      expect(response.body).to have_content("#{@base_title} | Contact")
+      expect(response.body).to have_content("Contact | #{@base_title}")
     end
   end
 
@@ -46,8 +44,19 @@ RSpec.describe PagesController, type: :controller do
 
     it "returns the right title" do
       get :about
-      expect(response.body).to have_content("#{@base_title} | About")
+      expect(response.body).to have_content("About Us | #{@base_title}")
     end
   end
 
+  describe "GET #help" do
+    it "returns http success" do
+      get :help
+      expect(response).to have_http_status(:success)
+    end
+
+    it "returns the right title" do
+      get :help
+      expect(response.body).to have_content("Help | #{@base_title}")
+    end
+  end
 end
