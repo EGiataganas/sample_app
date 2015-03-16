@@ -2,11 +2,12 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  name       :string
-#  email      :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                :integer          not null, primary key
+#  name              :string
+#  email             :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  ecrypted_password :string
 #
 
 require 'rails_helper'
@@ -16,7 +17,9 @@ RSpec.describe User, type: :model do
   before(:each) do
     @attr = { 
       name: "Example User",
-      email: "user@example.com"
+      email: "user@example.com",
+      password: "foobar",
+      password_confirmation: "foobar"
     }
   end
   
@@ -69,4 +72,51 @@ RSpec.describe User, type: :model do
     expect(user_with_duplicate_email).not_to be_valid
   end
   
+  describe "passwords" do
+
+  	before(:each) do
+  		@user = User.new(@attr)
+  	end
+
+  	it "should have a password attribute" do
+  		expect(@user).to respond_to(:password)
+  	end
+
+  	it "should have a password confirmation attribute" do
+  		expect(@user).to respond_to(:password_confirmation)
+  	end
+  end
+
+  describe "password validations" do
+    it "should require a password" do
+    	expect(User.new(@attr.merge(password: "", password_confirmation: ""))).not_to be_valid
+    end
+
+    it "should require a matching password confirmation" do
+    	expect(User.new(@attr.merge(password_confirmation: "invalid"))).not_to be_valid
+    end
+
+    it "should reject short password" do
+    	short = "a" * 5
+    	short_password_user = @attr.merge(password: short, password_confirmation: short)
+    	expect(User.new(short_password_user)).not_to be_valid
+    end
+
+    it "should reject long password" do
+    	long = "a" * 41
+    	long_password_user = @attr.merge(password: long, password_confirmation: long)
+    	expect(User.new(long_password_user)).not_to be_valid
+    end
+  end
+
+  describe "password encryption" do
+
+		before(:each) do
+	  	@user = User.create!(@attr)
+	 	end
+
+    it "should have an encrypted password attribute" do
+      expect(@user).to respond_to(:encrypted_password)
+    end
+  end
 end
