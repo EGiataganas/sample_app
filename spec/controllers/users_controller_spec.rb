@@ -22,6 +22,21 @@ RSpec.describe UsersController, type: :controller do
       get :show, id: @user
       expect(assigns(:user)).to eq(@user)
     end
+
+    it "returns the right title" do
+      get :show, id: @user
+      expect(response.body).to have_content("#{@user.name} | #{@base_title}")
+    end
+
+    it "returns the user's name" do
+      get :show, id: @user
+      expect(response.body).to have_selector('h1', text: @user.name)
+    end
+
+    it "returns the user's picture" do
+      get :show, id: @user
+      expect(response.body).to have_css('h1>img.gravatar')
+    end
   end
 
   describe "GET #new" do
