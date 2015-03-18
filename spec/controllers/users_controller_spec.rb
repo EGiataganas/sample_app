@@ -45,11 +45,57 @@ RSpec.describe UsersController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
-
     it "returns the right title" do
       get :new
       expect(response.body).to have_content("Sign up | #{@base_title}")
     end
   end
 
+  describe "POST 'create'" do
+  	describe "failure" do
+  		
+		  before(:each) do
+		    @attr = { 
+		      name: "", email: "", password: "",
+		      password_confirmation: "" }
+		  end
+
+	    # it "returns the right title" do
+	    #   post :create, user: @attr
+	    #   expect(response).to have_content("Sign up | #{@base_title}")
+	    # end
+
+	    it "should render the 'new' page" do
+	      post :create, user: @attr
+	      expect(response.body).to render_template(:new)
+	    end 
+
+		  it "should not create a user" do
+		    expect(lambda {post :create, user:@attr}).not_to change(User, :count)
+		  end
+  	end
+
+  	describe "success" do
+  		
+		  before(:each) do
+		    @attr = { 
+		      name: "New User", email: "user@example.com", 
+		      password: "foobar", password_confirmation: "foobar" }
+		  end
+
+		  it "should create a user" do
+		    expect(lambda {post :create, user:@attr}).to change(User, :count).by(1)
+		  end
+
+	    # it "returns the right title" do
+	    #   post :create, user: @attr
+	    #   expect(response).to have_content("Sign up | #{@base_title}")
+	    # end
+
+	    it "should render the 'new' page" do
+	      post :create, user: @attr
+	      expect(response.body).to redirect_to(user_path(assigns(:user)))
+	    end 
+  	end
+  end
 end
