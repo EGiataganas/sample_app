@@ -40,5 +40,28 @@ RSpec.describe SessionsController, type: :controller do
       # end
 
     end
+
+    describe "success" do
+      
+      before(:each) do
+      	@user = FactoryGirl.create :user
+      	@attr = { email: @user.email, password: @user.password } 
+      end
+
+      it "should log the user in" do
+        post :create, session: @attr
+
+      end
+
+      # it "returns the right title" do
+      #   post :create, user: @attr
+      #   expect(response).to have_content("Sign up | #{@base_title}")
+      # end
+
+      it "should redirect to the user show page" do
+        post :create, session: @attr
+        expect(response).to redirect_to(user_path(@user))
+      end 
+    end
   end
 end
