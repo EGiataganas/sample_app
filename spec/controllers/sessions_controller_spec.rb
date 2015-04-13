@@ -45,12 +45,12 @@ RSpec.describe SessionsController, type: :controller do
       
       before(:each) do
       	@user = FactoryGirl.create :user
-      	@attr = { email: @user.email, password: @user.password } 
+      	@attr = { email: @user.email, password: 'foobar' } 
       end
 
       it "should log the user in" do
         post :create, session: @attr
-
+        expect(response).to redirect_to(@user)
       end
 
       # it "returns the right title" do

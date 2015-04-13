@@ -11,11 +11,7 @@
 #
 
 class User < ActiveRecord::Base
-  # before_save :encrypt_password
-
-  # attr_accessor :password
-  # attr_accessible :name, :email, :password, :password_confirmation
-
+  
   before_save { email.downcase! }
   validates :name,  presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
@@ -26,33 +22,10 @@ class User < ActiveRecord::Base
   has_secure_password
   validates :password, presence: true, confirmation: true, length: { in: 6..40 }
 
-  # def has_password?(submitted_password)
-  #   encrypted_password == encrypt(submitted_password)
-  # end
-
-  # class << self
-  #   def authenticate(email, submitted_password)
-  #     user = find_by_email(email)
-  #     (user && user.has_password?(submitted_password)) ? user : nil
-  #   end
-  # end
-  
-  # private
-  
-  #   def encrypt_password
-  #     self.salt = make_salt if new_record?
-  #     self.encrypted_password = encrypt(password)
-  #   end
-  
-  #   def encrypt(string)
-  #     secure_hash("#{salt}--#{string}")
-  #   end
-
-  #   def secure_hash(string)
-  #     Digest::SHA2.hexdigest(string)
-  #   end
-
-  #   def make_salt
-  #     secure_hash("#{Time.now.utc}--#{password}")
-  #   end
+  # Returns the hash digest of the given string.
+  def self.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                  BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
 end

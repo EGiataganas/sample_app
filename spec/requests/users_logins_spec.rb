@@ -9,10 +9,8 @@ RSpec.feature "UsersLogins", :type => :feature do
     click_button "Log in"
 
     expect(User.count).to be_zero
-    expect(page).to have_text("Invalid email/password combination
-")
+    expect(page).to have_text("Invalid email/password combination")
     visit root_path
-    expect(page).not_to have_text("Invalid email/password combination
-")
+    expect(page).not_to have_text("Invalid email/password combination")
   end
 end

@@ -27,5 +27,6 @@ RSpec.feature "UsersSignups", :type => :feature do
     expect(User.count).to be(1)
     expect(page).to have_text("Welcome to the Sample App!")
     # expect(page.current_path).to eq(user_path, id: 1)
+    # expect(page).to be_true is_logged_in?
   end
 end
