@@ -2,13 +2,12 @@
 #
 # Table name: users
 #
-#  id                 :integer          not null, primary key
-#  name               :string
-#  email              :string
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  encrypted_password :string
-#  salt               :string
+#  id              :integer          not null, primary key
+#  name            :string
+#  email           :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  password_digest :string
 #
 
 require 'rails_helper'
@@ -117,51 +116,54 @@ RSpec.describe User, type: :model do
 	 	end
 
     it "should have an encrypted password attribute" do
-      expect(@user).to respond_to(:encrypted_password)
+      expect(@user).to respond_to(:password_digest)
     end
 
     it "should set the encrypted_password attribute" do
-      expect(@user.encrypted_password).not_to be_blank
+      expect(@user.password_digest).not_to be_blank
     end
 
-    it "should have a salt" do
-      expect(@user).to respond_to(:salt)
-    end
+    # it "should have a salt" do
+    #   expect(@user).to respond_to(:salt)
+    # end
   end
 
   describe "#has_password?" do
   	before(:each) do
-    @user = User.create!(@attr)
-   end
+      @user = User.create!(@attr)
+     end
 
-  	it "should exist" do
-      expect(@user).to respond_to(:has_password?)
-  	end
+  	# it "should exist" do
+   #    expect(@user).to respond_to(:has_password?)
+  	# end
 
   	it "should return true if the passwords match" do
-  		expect(@user.has_password?(@attr[:password])).to be_truthy
+  		expect(@user.authenticate(@attr[:password])).to be_truthy
   	end
 
   	it "should return false if the passwords don't match" do
-  		expect(@user.has_password?("invalid")).to be_falsey
+  		expect(@user.authenticate("invalid")).to be_falsey
   	end
   end
 
   describe "authenticate method" do
-    it "should exist" do
-    	expect(User).to respond_to(:authenticate)
-    end
+    # it "should exist" do
+    # 	expect(User).to respond_to(:authenticate)
+    # end
     
     it "should return nil on email/password mismatch" do
-    	expect(User.authenticate(@attr[:email], "wrongpass")).to be_nil
+      # expect(User.authenticate(@attr[:email], "wrongpass")).to be_nil
+      expect(User.find_by(email: @attr[:email]).try(:authenticate, 'wrongpass')).to be_falsey
     end
     
     it "should return nil for an email address with no user" do
-      expect(User.authenticate("bar@foo.com", @attr[:password])).to be_nil
+      # expect(User.authenticate("bar@foo.com", @attr[:password])).to be_nil
+      expect(User.find_by(email: 'bar@foo.com').try(:authenticate, @attr[:password])).to be_falsey
     end
     
     it "should return the user on email/password match" do
-    	expect(User.authenticate(@attr[:email], @attr[:password])).to be(@user)
+      expect(User.find_by(email: @attr[:email]).try(:authenticate, @attr[:password])).to be(@user)
+    	# expect(User.authenticate(@attr[:email], @attr[:password])).to be(@user)
     end
   end
 end

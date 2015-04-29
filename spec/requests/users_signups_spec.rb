@@ -11,7 +11,7 @@ RSpec.feature "UsersSignups", :type => :feature do
     click_button "Create my account"
 
     expect(User.count).to be_zero
-    expect(page).to have_text("The form contains 4 errors.")
+    expect(page).to have_text("The form contains 5 errors.")
     # expect(page.current_path).to eq new_user_path
   end
 
@@ -27,5 +27,6 @@ RSpec.feature "UsersSignups", :type => :feature do
     expect(User.count).to be(1)
     expect(page).to have_text("Welcome to the Sample App!")
     # expect(page.current_path).to eq(user_path, id: 1)
+    # expect(page).to be_true is_logged_in?
   end
 end
