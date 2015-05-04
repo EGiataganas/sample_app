@@ -105,7 +105,6 @@ RSpec.configure do |config|
   end
 
   private
-
     # Returns true inside an integration test.
     def integration_test?
       defined?(post_via_redirect)
