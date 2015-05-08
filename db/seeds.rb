@@ -8,4 +8,5 @@
 
 User.delete_all
 
-users = User.create([{name: 'Example User', email: 'user@example.com', password: 'foobar', password_confirmation: 'foobar'}])
+users = User.create([{name: 'Example User', email: 'user@example.com', password: 'foobar', password_confirmation: 'foobar'},
+                     {name: 'Test User', email: 'test@example.com', password: '123abc', password_confirmation: '123abc'}])
