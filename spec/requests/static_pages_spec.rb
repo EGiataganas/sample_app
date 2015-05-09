@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature "Static Pages", type: :feature, focus: true do
+RSpec.feature "Static Pages", type: :feature do
 
 	let(:base_title) { "Ruby on Rails Tutorial Sample App" }
   
