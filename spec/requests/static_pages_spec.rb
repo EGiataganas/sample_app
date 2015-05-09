@@ -7,5 +7,9 @@ RSpec.feature "Static Pages", type: :feature do
     	visit root_path  	
       expect(page).to have_content('Sample App')
     end
+    it "should have the right title" do
+    	visit root_path
+      expect(page).to have_title("Ruby on Rails Tutorial Sample App")
+    end
   end
 end
