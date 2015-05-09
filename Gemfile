@@ -31,6 +31,7 @@ group :development, :test do
   gem 'better_errors', '~> 2.1.1'
   gem 'binding_of_caller', '~> 0.7.2'
   gem 'rspec-rails', '~> 3.2'
+  gem 'guard-rspec', require: false
   gem 'shoulda-matchers', '~> 2.8' 
   gem 'factory_girl_rails'
   gem 'capybara'
