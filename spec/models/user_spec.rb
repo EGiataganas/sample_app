@@ -14,22 +14,33 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
 
-  before(:each) do
-    @attr = { 
+  subject do 
+    User.new({ 
       name: "Example User",
       email: "user@example.com",
       password: "foobar",
-      password_confirmation: "foobar"
-    }
+      password_confirmation: "foobar" })
   end
+
+  # it { should respond_to(:name)}
+  # it { should respond_to(:email)}
+
+
   
   it "should create a new instance given a valid attribute" do
     User.create!(@attr)
   end
   
   it "should require a name" do
-    no_name_user = User.new(@attr.merge(name: ""))
-    expect(no_name_user).not_to be_valid
+    # no_name_user = User.new(@attr.merge(name: ""))
+    # expect(no_name_user).not_to be_valid
+  end
+
+  it { is_expected.to validate_presence_of :name }
+  it { is_expected.to ensure_length_of(:name).is_at_most(50) }
+
+  %i<name email>.each do |public_attribute|
+    it { is_expected.to respond_to public_attribute }
   end
   
   it "should require an email address" do
