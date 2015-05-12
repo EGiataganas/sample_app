@@ -3,10 +3,10 @@ Rails.application.routes.draw do
   resources :users
   resources :sessions, only: [:new, :create, :destroy]
 
-  root             'pages#home'
-  get 'contact' => 'pages#contact'
-  get 'about' => 'pages#about'
-  get 'help' => 'pages#help'
+  root             'static_pages#home'
+  get 'contact' => 'static_pages#contact'
+  get 'about' => 'static_pages#about'
+  get 'help' => 'static_pages#help'
   get 'signup' => 'users#new'
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
