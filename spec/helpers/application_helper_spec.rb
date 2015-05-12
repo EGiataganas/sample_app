@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-RSpec.feature 'ApplicationHelper', type: :feature, focus: :true do
+RSpec.describe ApplicationHelper, type: :helper do
 
   describe 'full_title' do
     it 'should include the base title' do
