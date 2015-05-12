@@ -43,7 +43,7 @@ RSpec.feature 'Static Pages', type: :feature do
     it_should_behave_like 'all static pages'
   end
 
-  it 'should have the right site layout links', focus: :true do
+  it 'should have the right site layout links' do
 
     visit root_path
     click_link 'Sign up'
