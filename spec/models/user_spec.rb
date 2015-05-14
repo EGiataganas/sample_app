@@ -14,167 +14,130 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
 
-  subject do 
-    User.new({ 
+  before do 
+    @user = User.new({ 
       name: "Example User",
       email: "user@example.com",
       password: "foobar",
       password_confirmation: "foobar" })
   end
 
-  # it { should respond_to(:name)}
-  # it { should respond_to(:email)}
+  subject { @user }
 
+  it { should respond_to(:name)} #require a name
+  it { should respond_to(:email)} #require an email
+  it { should respond_to(:password_digest) } #require a password
+  it { should respond_to(:password) }
+  it { should respond_to(:password_confirmation) }
+  it { should respond_to(:authenticate) }
 
-  
-  it "should create a new instance given a valid attribute" do
-    User.create!(@attr)
-  end
-  
-  it "should require a name" do
-    # no_name_user = User.new(@attr.merge(name: ""))
-    # expect(no_name_user).not_to be_valid
-  end
+  it { should be_valid }
 
-  it { is_expected.to validate_presence_of :name }
-  it { is_expected.to ensure_length_of(:name).is_at_most(50) }
-
-  %i<name email>.each do |public_attribute|
-    it { is_expected.to respond_to public_attribute }
-  end
-  
-  it "should require an email address" do
-    no_email_user = User.new(@attr.merge(email: ""))
-    expect(no_email_user).not_to be_valid
-  end
-  
-  it "should reject names that are too long" do
-    long_name = "a" * 51
-    long_name_user = User.new(@attr.merge(name: long_name))
-    expect(long_name_user).not_to be_valid
-  end
-  
-  it "should accept valid email addresses" do
-    addresses = %w[user@foo.com THE_USER@foo.bar.org first.last@foo.jp]
-    addresses.each do |address|
-      valid_email_user = User.new(@attr.merge(email: address))
-    expect(valid_email_user).to be_valid
-    end
-  end
-  
-  it "should reject invalid email addresses" do
-    addresses = %w[user@foo,com user_at_foo.org example.user@foo.]
-    addresses.each do |address|
-      invalid_email_user = User.new(@attr.merge(email: address))
-      expect(invalid_email_user).not_to be_valid
-    end
-  end
-  
-  it "should reject duplicate email addresses" do
-    User.create!(@attr)
-    user_with_duplicate_email = User.new(@attr)
-    expect(user_with_duplicate_email).not_to be_valid  
-  end
-  
-  it "should reject email addresses identical up to case" do
-    upcased_email = @attr[:email].upcase
-    User.create!(@attr.merge(email: upcased_email))
-    user_with_duplicate_email = User.new(@attr)
-    expect(user_with_duplicate_email).not_to be_valid
-  end
-  
-  describe "passwords" do
-
-  	before(:each) do
-  		@user = User.new(@attr)
-  	end
-
-  	it "should have a password attribute" do
-  		expect(@user).to respond_to(:password)
-  	end
-
-  	it "should have a password confirmation attribute" do
-  		expect(@user).to respond_to(:password_confirmation)
-  	end
-  end
-
-  describe "password validations" do
-    it "should require a password" do
-    	expect(User.new(@attr.merge(password: "", password_confirmation: ""))).not_to be_valid
+  context "name" do
+    describe "when name is not present" do
+      before { @user.name = " " }
+      it { should_not be_valid}
     end
 
-    it "should require a matching password confirmation" do
-    	expect(User.new(@attr.merge(password_confirmation: "invalid"))).not_to be_valid
+    describe "when email is not present" do
+      before { @user.email = " " }
+      it { should_not be_valid}
     end
 
-    it "should reject short password" do
-    	short = "a" * 5
-    	short_password_user = @attr.merge(password: short, password_confirmation: short)
-    	expect(User.new(short_password_user)).not_to be_valid
-    end
-
-    it "should reject long password" do
-    	long = "a" * 41
-    	long_password_user = @attr.merge(password: long, password_confirmation: long)
-    	expect(User.new(long_password_user)).not_to be_valid
+    describe "when name is too long" do
+      before { @user.name = "a" * 51 }
+      it { should_not be_valid }
     end
   end
 
-  describe "password encryption" do
-
-		before(:each) do
-	  	@user = User.create!(@attr)
-	 	end
-
-    it "should have an encrypted password attribute" do
-      expect(@user).to respond_to(:password_digest)
+  context "email" do
+    describe "when email format is invalid" do
+      it "should be invalid" do
+        addresses = %w[user@foo,com user_at_foo..org example.user@foo.]
+        addresses.each do |invalid_address|
+          @user.email = invalid_address
+          expect(@user).not_to be_valid
+        end
+      end
     end
 
-    it "should set the encrypted_password attribute" do
-      expect(@user.password_digest).not_to be_blank
-    end
-
-    # it "should have a salt" do
-    #   expect(@user).to respond_to(:salt)
-    # end
-  end
-
-  describe "#has_password?" do
-  	before(:each) do
-      @user = User.create!(@attr)
-     end
-
-  	# it "should exist" do
-   #    expect(@user).to respond_to(:has_password?)
-  	# end
-
-  	it "should return true if the passwords match" do
-  		expect(@user.authenticate(@attr[:password])).to be_truthy
-  	end
-
-  	it "should return false if the passwords don't match" do
-  		expect(@user.authenticate("invalid")).to be_falsey
-  	end
-  end
-
-  describe "authenticate method" do
-    # it "should exist" do
-    # 	expect(User).to respond_to(:authenticate)
-    # end
-    
-    it "should return nil on email/password mismatch" do
-      # expect(User.authenticate(@attr[:email], "wrongpass")).to be_nil
-      expect(User.find_by(email: @attr[:email]).try(:authenticate, 'wrongpass')).to be_falsey
+    describe "when email format is valid" do
+      it "should accept valid email addresses" do
+        addresses = %w[user@foo.com A_US-ER@foo.bar.org a+b@baz.cn first.last@foo.jp]
+        addresses.each do |valid_address|
+          @user.email = valid_address
+        expect(@user).to be_valid
+        end
+      end
     end
     
-    it "should return nil for an email address with no user" do
-      # expect(User.authenticate("bar@foo.com", @attr[:password])).to be_nil
-      expect(User.find_by(email: 'bar@foo.com').try(:authenticate, @attr[:password])).to be_falsey
+    describe "email address with mixed case" do
+      let(:mixed_case_email) { "Foo@ExAMPle.CoM" }
+
+      it "should be saved as all lower-case" do
+        @user.email = mixed_case_email
+        @user.save
+        expect(@user.reload.email).to eq mixed_case_email.downcase
+      end
     end
     
-    it "should return the user on email/password match" do
-      expect(User.find_by(email: @attr[:email]).try(:authenticate, @attr[:password])).to be(@user)
-    	# expect(User.authenticate(@attr[:email], @attr[:password])).to be(@user)
+    describe "when email address is already taken even if its identical to upcase" do
+      before do
+        user_with_same_email = @user.dup
+        user_with_same_email.email = @user.email.upcase
+        user_with_same_email.save
+      end
+
+      it { should_not be_valid }
     end
   end
+
+  context "password" do
+    describe "when password is not present" do
+      before do
+        @user = User.new(name: "Example User", email: "user@example.com",
+                         password: " ", password_confirmation: " ")
+      end
+      it { should_not be_valid }
+    end
+
+    describe "when password doesn't match confirmation" do
+      before { @user.password_confirmation = "mismatch" }
+      it { should_not be_valid }
+    end
+
+    describe "with a password that's too short" do
+      before { @user.password = @user.password_confirmation = "a" * 5 }
+      it { should be_invalid }
+    end
+
+    describe "with a password that's too long" do
+      before { @user.password = @user.password_confirmation = "a" * 41 }
+      it { should be_invalid }
+    end
+
+    describe "return value of authenticate method" do
+      before { @user.save }
+      let(:found_user) { User.find_by_email(@user.email) }
+
+      describe "with valid password" do
+        it { should eq found_user.authenticate(@user.password) }
+      end
+
+      describe "with invalid password" do
+        let(:user_for_invalid_password) { found_user.authenticate("invalid") }
+
+        it { should_not eq user_for_invalid_password }
+        specify { expect(user_for_invalid_password).to be_falsey }
+      end
+    end
+  end
+
+  # Dan's
+  # it { is_expected.to validate_presence_of :name }
+  # it { is_expected.to ensure_length_of(:name).is_at_most(50) }
+
+  # %i<name email>.each do |public_attribute|
+  #   it { is_expected.to respond_to public_attribute }
+  # end
 end
