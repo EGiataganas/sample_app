@@ -26,10 +26,23 @@
 
       <p>Is there any more information we could give you to help make your bid?</p>
 
-      <form id="fr1">
-        <input type="text" id="tb1" />
-        <input type="submit" value="SUBMIT EMAIL TO: e.giataganas@gmail.com" <a href="mailto:e.giataganas@gmail.com">
+
+      <!-- <p><input id="subject" type="text" placeholder="type your subject here" ></p>
+      <p><input id="message" type="text" placeholder="type your message here" ></p>
+      <p><a id="mail-link" >Create email</a></p> -->
+
+      <form id="form_name" action="MAILTO:e.giataganas@gmail.com" method="get" enctype="text/plain">
+        <input type="text" id="email_subject" placeholder="type your subject here" />
+        <input type="text" id="email_body" placeholder="type your message here" />
+        <input type="submit" value="Submit" id="mail-link"/>
       </form>
+
+      <!-- <form id="fr1" action="MAILTO:e.giataganas@gmail.com" method="post" enctype="text/plain">
+        <input type="text" id="tb1" />
+        <input type="text" id="tb2" />
+        <input type="submit" id="bt1" value="send" />
+      </form> -->
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/EGiataganas/sample_app">Sample app</a> is maintained by <a href="https://github.com/EGiataganas">EGiataganas</a>.</span>
 
@@ -37,8 +50,34 @@
       </footer>
 
     </section>
-
-  
+    <!-- // <script src="js/script.js"></script> -->
+    
+    <script src="js/vendor/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript">
+    jQuery(function($) {
+      var form_action = $('#form_name').attr('action');
+        
+        $('#form_name').submit(function(ev) {
+          ev.preventDefault();
+          var subject = $('#email_subject').val(),
+            body = $('#email_body').val();
+          
+          window.location.href = form_action + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+          console.log(url);
+        });
+    });
+    // function loadEvents() {
+    //     var mailString;
+    //     function updateMailString() {
+    //         mailString = '?subject=' + encodeURIComponent($('#subject').val())
+    //             + '&body=' + encodeURIComponent($('#message').val());
+    //         $('#mail-link').attr('href',  'mailto:e.giataganas@gmail.com' + mailString);
+    //     }
+    //     $( "#subject" ).focusout(function() { updateMailString(); });
+    //     $( "#message" ).focusout(function() { updateMailString(); });
+    //     updateMailString();
+    // }
+</script>
   </body>
 </html>
 
